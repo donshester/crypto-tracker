@@ -4,6 +4,7 @@ import './Header.scss'
 interface ICrypto {
     name: string;
     symbol: string;
+    price: number;
 }
 
 interface IPortfolio {
@@ -14,9 +15,9 @@ interface IPortfolio {
 
 const Header: React.FC = () => {
     const cryptos: ICrypto[] = [
-        { name: "Bitcoin", symbol: "BTC" },
-        { name: "Ethereum", symbol: "ETH" },
-        { name: "Binance Coin", symbol: "BNB" },
+        { name: "Bitcoin", symbol: "BTC", price: 20329.01 },
+        { name: "Ethereum", symbol: "ETH", price: 1456.21 },
+        { name: "Binance Coin", symbol: "BNB", price: 274.13 },
     ];
     const portfolio: IPortfolio = {
         currentPrice: 105.65,
@@ -34,6 +35,7 @@ const Header: React.FC = () => {
                     <div className="Header__crypto" key={crypto.symbol}>
                         <div className="Header__cryptoSymbol">{crypto.symbol}</div>
                         <div className="Header__cryptoName">{crypto.name}</div>
+                        <div className="Header__cryptoPrice">{crypto.price}</div>
                     </div>
                 ))}
             </div>
@@ -42,10 +44,9 @@ const Header: React.FC = () => {
                 <div className={"Header__portfolioAbsoluteDiff"}>{"+" + portfolio.absoluteDifference}</div>
                 { portfolio.relativeDifference > 0 ?
                     <div className={"Header__portfolioRelativeDiff"}>{`(${portfolio.relativeDifference}%)`}</div>
-                    : <div className={"Header__portfolioRelativeDiff--isNegative"}>{`(${portfolio.relativeDifference}%)`}</div>
+                    : <div className={"Header__portfolioRelativeDiff--isNegative"}>{`(${portfolio.relativeDifference.toFixed(2)}%)`}</div>
                 }
             </div>
-
         </header>
     );
 };

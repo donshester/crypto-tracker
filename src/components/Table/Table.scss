@@ -1,0 +1,72 @@
+.Table {
+  width: 70%;
+  border-collapse: collapse;
+  font-size: 1rem;
+  text-align: center;
+  overflow: hidden;
+  border-radius: 8px;
+  margin: 10% auto ;
+
+  &__head {
+    position: sticky;
+    background-color: #F2F2F2;
+    padding: 10px;
+    font-weight: bold;
+    border-bottom: 1px solid #D9D9D9;
+  }
+
+  &__cell {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+
+    &:nth-child(odd) {
+      background-color: #F2F2F2;
+    }
+  }
+
+  &__logo {
+
+    border: 1px solid #ddd;
+    width: 5%;
+
+
+    img {
+      position: center;
+      width: 40px;
+      height: 40px;
+    }
+
+  }
+
+  &__name {
+    width: 10%;
+    border: 1px solid #ddd;
+  }
+  &__rank {
+    border: 1px solid #ddd;
+    width: 5%
+  }
+
+
+
+  &__abbreviation {
+    border: 1px solid #ddd;
+    width: 5%;
+  }
+
+  &__price {
+    border: 1px solid #ddd;
+    width: 8%;
+  }
+
+  &__marketCap {
+    border: 1px solid #ddd;
+    width: 15%;
+  }
+
+  &__change {
+    border: 1px solid #ddd;
+    width: 10%;
+  }
+}
