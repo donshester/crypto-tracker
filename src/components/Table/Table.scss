@@ -3,9 +3,9 @@
   border-collapse: collapse;
   font-size: 1rem;
   text-align: center;
-  overflow: hidden;
-  border-radius: 8px;
-  margin: 10% auto ;
+  margin: 10% auto;
+  border: 1px solid #ccc;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 
   &__head {
     position: sticky;
@@ -19,18 +19,14 @@
     border: 1px solid #ddd;
     padding: 8px;
     text-align: center;
-
-    &:nth-child(odd) {
-      background-color: #F2F2F2;
-    }
   }
 
+  &__row {
+    border-bottom: 1px double #dddddd;
+
+  }
   &__logo {
-
-    border: 1px solid #ddd;
     width: 5%;
-
-
     img {
       position: center;
       width: 40px;
@@ -39,34 +35,48 @@
 
   }
 
+
   &__name {
     width: 10%;
-    border: 1px solid #ddd;
+
   }
   &__rank {
-    border: 1px solid #ddd;
+
     width: 5%
   }
 
 
 
   &__abbreviation {
-    border: 1px solid #ddd;
+
     width: 5%;
   }
 
   &__price {
-    border: 1px solid #ddd;
+
     width: 8%;
   }
 
   &__marketCap {
-    border: 1px solid #ddd;
-    width: 15%;
+
+    width: 10%;
   }
 
   &__change {
-    border: 1px solid #ddd;
+
     width: 10%;
+  }
+  &__action {
+    width: 5%;
+  }
+  &__addButton {
+    font-size: 1.5rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 100%;
+    border: none;
+    background-color: #fff;
+    color: #738290;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
   }
 }

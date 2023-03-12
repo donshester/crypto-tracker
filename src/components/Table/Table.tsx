@@ -163,11 +163,12 @@ const Table: React.FC= () =>{
                     <th className="Table__cell">Price</th>
                     <th className="Table__cell">Market Cap</th>
                     <th className="Table__cell">Change 24h</th>
+                    <th className="Table__cell">Action</th>
                 </tr>
             </thead>
             <tbody className="Table__body">
             {data.map((coin) => (
-                <tr>
+                <tr className="Table__row">
                     <td className="Table__rank">{coin.rank}</td>
                     <td className="Table__logo"><img src={coin.logo} alt={coin.name}/></td>
                     <td className="Table__name">{coin.name}</td>
@@ -175,6 +176,11 @@ const Table: React.FC= () =>{
                     <td className="Table__price">{coin.price}</td>
                     <td className="Table__marketCap">{coin.marketCap}</td>
                     <td className="Table__change">{coin.change24h}</td>
+                    <td className= "Table__action">
+                        <button className="Table__addButton" >
+                            +
+                        </button>
+                    </td>
                 </tr>
             ))}
             </tbody>
