@@ -18,7 +18,7 @@ export const options = {
         xAxes: [{
              ticks: {
                  display: true,
-                 fontSize: 12,
+                     fontSize: 12,
              },
             gridLines: {
                  display: true,
