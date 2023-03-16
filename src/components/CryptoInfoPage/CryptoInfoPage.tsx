@@ -1,8 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CryptoChart from "../CryptoChart/CryptoChart";
 import "./CryptoInfoPage.scss"
 import AddToPortfolioModal from "../AddToPorfolioModal/AddToPortfolioModal";
-
+import { useDispatch, useSelector } from "react-redux";
+import { CryptoPriceState, ICryptoPriceData } from "../../redux/reducers/fetchCryptoPrice";
+import { fetchCryptoPrice } from "../../redux/thunks/thunks";
+import { AppDispatch } from "../../redux/store";
+import moment from "moment";
 interface ICryptoData  {
     id: string;
     rank: string;
@@ -30,31 +34,41 @@ const cryptoData = {
         changePercent24Hr:   1.04,
         vwap24Hr: 47319.68
 }
-const chartData = {
-    labels: ["2022-03-04", "2022-03-05", "2022-03-06", "2022-03-07", "2022-03-08", "2022-03-09", "2022-03-10"],
-    datasets: [
-        {
-            label: "BTC Price",
-            data: [50000, 52000, 54000, 53000, 55000, 56000, 58000],
-            backgroundColor: "rgba(0, 119, 204, 0.4)",
-            borderColor: "rgba(0, 119, 204, 1)",
-            pointBackgroundColor: "rgba(0, 119, 204, 1)",
-            pointBorderColor: "#fff",
-            pointHoverBackgroundColor: "#fff",
-            pointHoverBorderColor: "rgba(0, 119, 204, 1)"
-        }
-    ]
-};
+
 const CryptoInfoPage: React.FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const dispatch: AppDispatch  = useDispatch();
 
+    const { loading, data, error } = useSelector((state: { cryptoPrice: CryptoPriceState }) => state.cryptoPrice );
+
+
+    const chartData = {
+        labels: data.map((item:ICryptoPriceData) => item.date),
+        datasets: [
+            {
+                label: "BTC Price",
+                data: data.map((item:ICryptoPriceData) => (item.priceUsd)),
+                backgroundColor: "rgba(0, 119, 204, 0.4)",
+                borderColor: "rgba(0, 119, 204, 1)",
+                pointBackgroundColor: "rgba(0, 119, 204, 1)",
+                pointBorderColor: "#fff",
+                pointHoverBackgroundColor: "#fff",
+                pointHoverBorderColor: "rgba(0, 119, 204, 1)",
+                pointRadius: 0
+            }
+        ]
+    };
     const handleAddToPortfolio = () => {
         setIsModalOpen(true);
     };
+    useEffect(() => {
+        dispatch(fetchCryptoPrice());
+    }, [dispatch]);
 
     const handleCloseModal = () => {
         setIsModalOpen(false);
     };
+
 
     const handleSubmitModal = (price: number, quantity: number) => {
         console.log("Price:", price, "Quantity:", quantity);
