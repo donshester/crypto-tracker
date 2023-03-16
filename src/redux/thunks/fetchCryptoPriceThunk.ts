@@ -1,7 +1,7 @@
 import { ThunkAction } from "redux-thunk";
 import { Action } from "redux";
 import { fetchCryptoPriceError, fetchCryptoPriceRequest, fetchCryptoPriceSuccess } from "../actions/fetchCryptoPrice";
-import { ICryptoPriceData } from "../reducers/fetchCryptoPrice";
+import { ICryptoPriceData } from "../reducers/cryptoPriceReducer";
 
 interface IResponse{
     priceUsd: number;
