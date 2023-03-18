@@ -32,40 +32,41 @@
       width: 40px;
       height: 40px;
     }
-
   }
 
   &__name {
     width: 10%;
-
   }
   &__rank {
-
     width: 5%
   }
 
   &__abbreviation {
-
     width: 5%;
   }
 
   &__price {
-
     width: 8%;
   }
 
   &__marketCap {
-
     width: 10%;
   }
 
   &__change {
-
     width: 10%;
+    &.--positive {
+      color: green;
+    }
+    &.--negative {
+      color: red;
+    }
   }
+
   &__action {
     width: 5%;
   }
+
   &__addButton {
     font-size: 1.5rem;
     padding: 0.25rem 0.5rem;
@@ -75,5 +76,51 @@
     color: #738290;
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
     cursor: pointer;
+  }
+
+}
+
+
+
+.Button {
+  display: inline-block;
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: none;
+  font-size: 11px;
+  font-weight: bold;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  position: absolute;
+  margin-right: 15%;
+  margin-left: 15%;
+  margin-top: 2%;
+  &--prev {
+    background-color: #2196f3;
+    color: #fff;
+    left: 10px;
+    &:hover {
+      background-color: #1976d2;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  &--next {
+    background-color: #e0e0e0;
+    color: #000;
+    right: 10px;
+    &:hover {
+      background-color: #bdbdbd;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
   }
 }
