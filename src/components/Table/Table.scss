@@ -78,6 +78,20 @@
     cursor: pointer;
   }
 
+  &__link{
+    color: #666;
+    &:visited {
+      color: inherit;
+    }
+    &:hover {
+      color: #333;
+      text-decoration: underline;
+    }
+
+    &:active {
+      color: #555;
+    }
+  }
 }
 
 

@@ -1,0 +1,82 @@
+.portfolio-modal {
+  background-color: white;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  max-width: 500px;
+  z-index: 999;
+  border-radius: 16px; }
+  .portfolio-modal__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px; }
+    .portfolio-modal__header h2 {
+      margin: 0;
+      font-size: 24px; }
+    .portfolio-modal__header__closeButton {
+      background-color: transparent;
+      border: none;
+      color: #ccc;
+      cursor: pointer;
+      font-size: 24px; }
+      .portfolio-modal__header__closeButton:hover {
+        color: #000; }
+    .portfolio-modal__header__content {
+      display: flex;
+      flex-direction: column; }
+    .portfolio-modal__header__form {
+      margin-bottom: 20px; }
+      .portfolio-modal__header__form h3 {
+        margin-top: 0; }
+
+.portfolio-modal__formGroup {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px; }
+  .portfolio-modal__formGroup label {
+    margin-bottom: 5px; }
+  .portfolio-modal__formGroup select, .portfolio-modal__formGroup input {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    padding: 5px; }
+  .portfolio-modal__formGroup select, .portfolio-modal__formGroup input[type="number"] {
+    height: 40px; }
+
+.portfolio-modal__sellButton {
+  background-color: #f44336;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 10px 20px; }
+  .portfolio-modal__sellButton:hover {
+    background-color: #d32f2f; }
+
+.portfolio-modal__table {
+  border-collapse: collapse;
+  width: 100%; }
+  .portfolio-modal__table th, .portfolio-modal__table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left; }
+  .portfolio-modal__table th {
+    background-color: #f2f2f2;
+    font-size: 16px; }
+  .portfolio-modal__table td {
+    font-size: 14px; }
+
+.portfolio-modal
+.portfolio-modal__positiveChange {
+  color: green; }
+
+.portfolio-modal__negativeChange {
+  color: red; }
+
+/*# sourceMappingURL=PortfolioModal.css.map */

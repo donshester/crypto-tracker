@@ -23,14 +23,21 @@ interface ICoincapResponse {
 export type ICryptoInfoResponse = Omit<ICoincapResponse, 'explorer'>
 
 export const fetchCryptoInfo =
-  (id: string): ThunkAction<Promise<void>, AppState, {}, FetchCryptoInfoActions> =>
+  (
+    id: string,
+  ): ThunkAction<Promise<ICryptoInfoResponse>, AppState, undefined, FetchCryptoInfoActions> =>
   async (dispatch) => {
     try {
       const result = await fetch(`https://api.coincap.io/v2/assets/${id}`)
       const data = await result.json()
       const { explorer, ...responseArr } = data.data
       dispatch(fetchCryptoInfoSuccess(responseArr))
+      if (!responseArr) {
+        throw new Error('Invalid response')
+      }
+      return responseArr as ICryptoInfoResponse
     } catch (error) {
       dispatch(fetchCryptoInfoError('Something went wrong!'))
+      throw error
     }
   }

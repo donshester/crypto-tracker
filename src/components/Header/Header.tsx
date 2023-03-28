@@ -1,5 +1,6 @@
 import React from 'react'
 import './Header.scss'
+import { Portfolio } from '../Portfolio/Portfolio'
 
 interface ICrypto {
   name: string
@@ -19,11 +20,6 @@ const Header: React.FC = () => {
     { name: 'Ethereum', symbol: 'ETH', price: 1456.21 },
     { name: 'Binance Coin', symbol: 'BNB', price: 274.13 },
   ]
-  const portfolio: IPortfolio = {
-    currentPrice: 105.65,
-    absoluteDifference: 2.67,
-    relativeDifference: 2.59,
-  }
 
   return (
     <header className='Header'>
@@ -39,17 +35,7 @@ const Header: React.FC = () => {
         ))}
       </div>
       <div className={'Header__portfolio'}>
-        <div className={'Header__portfolioCurrentPrice'}>{portfolio.currentPrice + ' USD'}</div>
-        <div className={'Header__portfolioAbsoluteDiff'}>{'+' + portfolio.absoluteDifference}</div>
-        {portfolio.relativeDifference > 0 ? (
-          <div
-            className={'Header__portfolioRelativeDiff'}
-          >{`(${portfolio.relativeDifference}%)`}</div>
-        ) : (
-          <div
-            className={'Header__portfolioRelativeDiff--isNegative'}
-          >{`(${portfolio.relativeDifference.toFixed(2)}%)`}</div>
-        )}
+        <Portfolio />
       </div>
     </header>
   )

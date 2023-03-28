@@ -6,36 +6,35 @@ import { fetchCryptoInfo } from '../../redux/thunks/fetchCryptoInfoThunk'
 import { useDispatch, useSelector } from 'react-redux'
 import { ICryptoInfoState } from '../../redux/reducers/cryptoInfoReducer'
 import { AppDispatch } from '../../redux/store'
-
+import {buyCurrency} from '../../redux/actions/portfolio';
+import {CurrencyType} from '../../utils/types';
 interface IAddToPortfolioModalProps {
   isOpen: boolean
-  setIsOpen: SetStateAction<any>
   onClose: () => void
-  onSubmit: (price: number, quantity: number) => void
+  id: string
 }
 
 const AddToPortfolioModal: React.FC<IAddToPortfolioModalProps> = ({
   isOpen,
-  onClose,
-  onSubmit,
-}) => {
-  const [price, setPrice] = useState<string | number>(123.45)
-  const [quantity, setQuantity] = useState<string | number>(0)
-  const [errorMessage, setErrorMessage] = useState('')
-  const [className, setClassName] = useState('')
-  const [cryptoRate, setCryptoRate] = useState<number>(0)
+  onClose, id}) => {
+  const [price, setPrice] = useState<string | number>(123.45);
+  const [quantity, setQuantity] = useState<string | number>(0);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [className, setClassName] = useState('');
   const dispatch: AppDispatch = useDispatch()
   const { cryptoData, fetchInfoError } = useSelector(
-    (state: { cryptoInfo: ICryptoInfoState }) => state.cryptoInfo,
+      (state: { cryptoInfo: ICryptoInfoState }) => state.cryptoInfo,
   )
 
   useEffect(() => {
-    dispatch(fetchCryptoInfo('bitcoin'))
-  }, [dispatch])
+    if (id) {
+      dispatch(fetchCryptoInfo(id))
+    }
+  }, [dispatch, id])
 
   const limit = 1000
   const prefixPrice = '$'
-  const prefixCrypto = 'BTC '
+  const prefixCrypto = `${cryptoData?.id} `
 
   const handleOnValueChange: CurrencyInputProps['onValueChange'] = (value, _, values): void => {
     if (!value) {
@@ -82,7 +81,13 @@ const AddToPortfolioModal: React.FC<IAddToPortfolioModalProps> = ({
   }
 
   const handleSubmit = () => {
-    onSubmit(Number(price), Number(quantity))
+    const currency: CurrencyType = {
+      id: cryptoData?.symbol ?? '',
+      name: cryptoData?.name ?? '',
+      boughtPrice: Number(cryptoData?.priceUsd ?? 0),
+      quantity: Number(quantity),
+    }
+    dispatch(buyCurrency(currency));
     onClose()
   }
 
@@ -115,10 +120,10 @@ const AddToPortfolioModal: React.FC<IAddToPortfolioModalProps> = ({
                 className='input'
                 value={quantity}
                 onValueChange={handleQuantityChange}
-                placeholder='BTC '
+                placeholder={`${cryptoData?.id} `}
                 groupSeparator=','
                 decimalSeparator='.'
-                prefix={prefixCrypto}
+                prefix={cryptoData?.symbol + ' '}
                 decimalsLimit={15}
                 step={1}
               />
@@ -137,4 +142,4 @@ const AddToPortfolioModal: React.FC<IAddToPortfolioModalProps> = ({
   )
 }
 
-export default AddToPortfolioModal
+export default AddToPortfolioModal;

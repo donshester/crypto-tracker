@@ -15,11 +15,12 @@ interface IResponse {
 }
 
 export const fetchCryptoPrice =
-  (): ThunkAction<void, AppState, {}, Action<string>> => async (dispatch) => {
+  (id: string): ThunkAction<void, AppState, undefined, Action<string>> =>
+  async (dispatch) => {
     dispatch(fetchCryptoPriceRequest())
 
     try {
-      const response = await fetch('https://api.coincap.io/v2/assets/bitcoin/history?interval=d1')
+      const response = await fetch(`https://api.coincap.io/v2/assets/${id}/history?interval=d1`)
       const data = await response.json()
       const responseArr: IResponse[] = data.data
       const chartData: ICryptoPriceData[] = responseArr.map(({ date, priceUsd }) => ({

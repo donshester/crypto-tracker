@@ -2,15 +2,19 @@ import React from 'react'
 import './App.css'
 import Header from './components/Header/Header'
 import CryptoInfoPage from './components/CryptoInfoPage/CryptoInfoPage'
-import Table from './components/Table/Table';
+import Table from './components/Table/Table'
+import { Link, Route, BrowserRouter as Router, Routes } from 'react-router-dom'
 
 function App() {
   return (
-    <div className='App'>
+    <Router>
       <Header />
-      <Table/>
-    </div>
-  )
+      <Routes>
+        <Route path={'/'} element={<Table />} />
+        <Route path={'/currency/:id'} element={<CryptoInfoPage />} />
+      </Routes>
+    </Router>
+)
 }
 
 export default App
