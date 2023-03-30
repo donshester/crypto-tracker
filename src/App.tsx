@@ -11,7 +11,7 @@ function App() {
       <Header />
       <Routes>
         <Route path={'/'} element={<Table />} />
-        <Route path={'/currency/:id'} element={<CryptoInfoPage />} />
+        <Route path={'/currency/:id'} element={<CryptoInfoPage />}/>
       </Routes>
     </Router>
 )

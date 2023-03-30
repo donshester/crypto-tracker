@@ -160,6 +160,7 @@ const PortfolioModal: React.FC<IPortfolioModalProps> = ({ isOpen, onClose }) => 
                             decimalsLimit={15}
                             step={1}
                             allowNegativeValue={false}
+                            maxLength={15}
                         />
                     </div>
                     <div className='invalid-feedback'>{errorMessage}</div>

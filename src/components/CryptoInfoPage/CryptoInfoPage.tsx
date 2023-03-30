@@ -60,7 +60,6 @@ const CryptoInfoPage: React.FC = () => {
     setIsModalOpen(false)
   }
 
-
   return (
     <div className='CryptoInfoPage'>
       {loading ? (

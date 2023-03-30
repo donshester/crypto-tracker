@@ -5,7 +5,7 @@ import { CurrencyInputProps } from 'react-currency-input-field/dist/components/C
 import { fetchCryptoInfo } from '../../redux/thunks/fetchCryptoInfoThunk'
 import { useDispatch, useSelector } from 'react-redux'
 import { ICryptoInfoState } from '../../redux/reducers/cryptoInfoReducer'
-import { AppDispatch } from '../../redux/store'
+import {AppDispatch, AppState} from '../../redux/store'
 import {buyCurrency} from '../../redux/actions/portfolio';
 import {CurrencyType} from '../../utils/types';
 interface IAddToPortfolioModalProps {
@@ -21,6 +21,7 @@ const AddToPortfolioModal: React.FC<IAddToPortfolioModalProps> = ({
   const [quantity, setQuantity] = useState<string | number>(0);
   const [errorMessage, setErrorMessage] = useState('');
   const [className, setClassName] = useState('');
+  const portfolio = useSelector((state: AppState)=>state.portfolio)
   const dispatch: AppDispatch = useDispatch()
   const { cryptoData, fetchInfoError } = useSelector(
       (state: { cryptoInfo: ICryptoInfoState }) => state.cryptoInfo,
@@ -32,9 +33,8 @@ const AddToPortfolioModal: React.FC<IAddToPortfolioModalProps> = ({
     }
   }, [dispatch, id])
 
-  const limit = 1000
+  const limit = portfolio.balance;
   const prefixPrice = '$'
-  const prefixCrypto = `${cryptoData?.id} `
 
   const handleOnValueChange: CurrencyInputProps['onValueChange'] = (value, _, values): void => {
     if (!value) {
@@ -51,12 +51,13 @@ const AddToPortfolioModal: React.FC<IAddToPortfolioModalProps> = ({
     }
 
     if (Number(value) > limit) {
-      setErrorMessage(`Max: ${prefixPrice}${limit}`)
+      setErrorMessage(`Max: ${prefixPrice}${limit.toFixed(2)}`)
       setClassName('is-invalid')
       setPrice(value)
       setQuantity(Number(value) / Number(cryptoData?.priceUsd))
       return
     }
+    setErrorMessage('')
     setQuantity(Number(value) / Number(cryptoData?.priceUsd))
     setClassName('is-valid')
     setPrice(value)
@@ -80,7 +81,12 @@ const AddToPortfolioModal: React.FC<IAddToPortfolioModalProps> = ({
     setQuantity(inputValue)
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = (e: React.MouseEvent<HTMLElement>) => {
+    if(Number(quantity)*Number(cryptoData?.priceUsd)>limit){
+      e.preventDefault();
+      return;
+    }
+
     const currency: CurrencyType = {
       id: cryptoData?.symbol ?? '',
       name: cryptoData?.name ?? '',
@@ -109,7 +115,10 @@ const AddToPortfolioModal: React.FC<IAddToPortfolioModalProps> = ({
                 decimalSeparator='.'
                 prefix={prefixPrice}
                 decimalsLimit={2}
+                max={portfolio.balance}
                 step={1}
+                allowNegativeValue={false}
+                maxLength={15}
               />
               <div className='invalid-feedback'>{errorMessage}</div>
             </div>
@@ -126,7 +135,10 @@ const AddToPortfolioModal: React.FC<IAddToPortfolioModalProps> = ({
                 decimalSeparator='.'
                 prefix={cryptoData?.symbol + ' '}
                 decimalsLimit={15}
+                allowDecimals={true}
                 step={1}
+                allowNegativeValue={false}
+                maxLength={15}
               />
             </div>
           </div>
