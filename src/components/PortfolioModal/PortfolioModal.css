@@ -6,8 +6,7 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 80%;
-  max-width: 500px;
+  max-width: 600px;
   z-index: 999;
   border-radius: 16px; }
   .portfolio-modal__header {
@@ -33,6 +32,10 @@
       margin-bottom: 20px; }
       .portfolio-modal__header__form h3 {
         margin-top: 0; }
+  .portfolio-modal__change--positive {
+    color: green; }
+  .portfolio-modal__change--negative {
+    color: red; }
 
 .portfolio-modal__formGroup {
   display: flex;
@@ -44,8 +47,8 @@
     border: 1px solid #ccc;
     border-radius: 5px;
     font-size: 16px;
-    padding: 5px; }
-  .portfolio-modal__formGroup select, .portfolio-modal__formGroup input[type="number"] {
+    padding: 5px;
+    width: auto;
     height: 40px; }
 
 .portfolio-modal__sellButton {
@@ -60,8 +63,10 @@
     background-color: #d32f2f; }
 
 .portfolio-modal__table {
+  padding-top: 10px;
   border-collapse: collapse;
-  width: 100%; }
+  width: 100%;
+  overflow-x: auto; }
   .portfolio-modal__table th, .portfolio-modal__table td {
     border: 1px solid #ddd;
     padding: 8px;
@@ -72,14 +77,16 @@
   .portfolio-modal__table td {
     font-size: 14px; }
 
-.portfolio-modal
-.portfolio-modal__positiveChange {
-  color: green; }
-
-.portfolio-modal__negativeChange {
-  color: red; }
-
 .invalid-feedback {
   color: red; }
+
+.portfolio-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 998; }
 
 /*# sourceMappingURL=PortfolioModal.css.map */

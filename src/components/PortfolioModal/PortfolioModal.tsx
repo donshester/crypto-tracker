@@ -2,7 +2,7 @@ import {useDispatch, useSelector} from 'react-redux'
 import {AppDispatch, AppState} from '../../redux/store'
 import {correctCryptoParam, extractCurrencyName} from '../helpers'
 import {fetchCryptoInfo, ICryptoInfoResponse} from '../../redux/thunks/fetchCryptoInfoThunk'
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {sellCurrency} from '../../redux/actions/portfolio';
 import './PortfolioModal.scss'
 import CurrencyInput from 'react-currency-input-field';
@@ -13,8 +13,17 @@ interface IPortfolioModalProps {
     isOpen: boolean
     onClose: () => void
 }
+interface ITableData{
+    id: string
+    name: string
+    quantity: number
+    boughtPrice: string
+    valueNow:string
+    absoluteChange: number
+    percentChange: number
+}
 
-const PortfolioModal: React.FC<IPortfolioModalProps> = ({ onClose }) => {
+const PortfolioModal: React.FC<IPortfolioModalProps> = ({ isOpen, onClose }) => {
     const portfolio = useSelector((state: AppState) => state.portfolio);
     const dispatch:AppDispatch = useDispatch();
     const [errorMessage, setErrorMessage] = useState<string>('');
@@ -24,7 +33,55 @@ const PortfolioModal: React.FC<IPortfolioModalProps> = ({ onClose }) => {
         quantity: '',
         maxQuantity: 0
     });
+    const [currencyPrices, setCurrencyPrices] = useState<{ [key: string]: number }>({});
+    const [tableData, setTableData] = useState<ITableData[]>([]);
+    const [isBackdropVisible, setIsBackdropVisible] = useState(false);
+
+    useEffect(() => {
+        setIsBackdropVisible(isOpen);
+    }, [isOpen]);
     const getCurrencyQuantity = (currencyName: string): number => {
+        const currency = portfolio.currencies?.find(crypto => crypto.name === currencyName);
+        return currency ? currency.quantity : 0;
+    };
+    useEffect(() => {
+        const fetchCurrencyPrices = async () => {
+            const currencyNames = portfolio.currencies?.map((crypto) => crypto.name);
+            if (currencyNames) {
+                const response = await Promise.all(currencyNames.map((name) => dispatch(fetchCryptoInfo(correctCryptoParam(name)))));
+                const prices = response.reduce<{ [key: string]: number }>((acc, curr, index) => {
+                    if (curr) {
+                        acc[currencyNames[index] as string] = parseFloat(curr.priceUsd);
+                    }
+                    return acc;
+                }, {});
+                setCurrencyPrices(prices);
+            }
+        };
+        fetchCurrencyPrices();
+
+        const newTableData: ITableData[] = [];
+        portfolio.currencies?.forEach((crypto) => {
+            const quantity = getCurrencyQuantity(crypto.name);
+            const boughtPrice = crypto.boughtPrice;
+            const valueNow = currencyPrices[crypto.name] ? currencyPrices[crypto.name] * quantity : 0;
+            newTableData.push({
+                id: crypto.id,
+                name: crypto.name,
+                quantity: quantity,
+                boughtPrice: `${boughtPrice.toFixed(2)}`,
+                valueNow: `${valueNow.toFixed(2)} (${valueNow > crypto.quantity*crypto.boughtPrice ? '+' : '-'}$${Math.abs(valueNow - crypto.quantity*crypto.boughtPrice).toFixed(2)})`,
+                absoluteChange: currencyPrices[crypto.name],
+                percentChange: ((currencyPrices[crypto.name]/boughtPrice-1)*100)
+            })
+        });
+        setTableData(newTableData);
+
+
+    }, [dispatch, portfolio, currencyPrices]);
+
+
+    const getMaxCurrencyQuantity = (currencyName: string): number => {
         const currency = portfolio.currencies?.find(crypto => crypto.name === currencyName);
         return currency ? currency.quantity : 0;
     };
@@ -37,7 +94,7 @@ const PortfolioModal: React.FC<IPortfolioModalProps> = ({ onClose }) => {
     const handleSellFormChange = (event: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>) => {
         if (event.target instanceof HTMLSelectElement) {
             const selectedOption = event.target.options[event.target.selectedIndex];
-            setSellFormData({ ...sellFormData, id: selectedOption.value, name: extractCurrencyName(selectedOption.label), maxQuantity: getCurrencyQuantity(extractCurrencyName(selectedOption.label))});
+            setSellFormData({ ...sellFormData, id: selectedOption.value, name: extractCurrencyName(selectedOption.label), maxQuantity: getMaxCurrencyQuantity(extractCurrencyName(selectedOption.label))});
         } else {
             setSellFormData({ ...sellFormData, [event.target.name]: event.target.value });
         }
@@ -53,7 +110,6 @@ const PortfolioModal: React.FC<IPortfolioModalProps> = ({ onClose }) => {
 
 
     const handleQuantityChange: CurrencyInputProps['onValueChange'] = (value, _, values) => {
-
         setSellFormData({ ...sellFormData, quantity: value as string });
         if (parseFloat(sellFormData.quantity) > sellFormData.maxQuantity){
             setErrorMessage(`Max is ${sellFormData.maxQuantity} ${sellFormData.id}!`);
@@ -63,7 +119,11 @@ const PortfolioModal: React.FC<IPortfolioModalProps> = ({ onClose }) => {
         }
 
     }
+
+
     return (
+        <>
+        {isOpen && (
         <div className='portfolio-modal'>
             <div className='portfolio-modal__header'>
                 <h2>My Portfolio</h2>
@@ -113,29 +173,22 @@ const PortfolioModal: React.FC<IPortfolioModalProps> = ({ onClose }) => {
                         <th>Coin</th>
                         <th>Quantity</th>
                         <th>Bought Price</th>
-                        <th>Value</th>
+                        <th>Value now</th>
                         <th>Change</th>
                         <th>Sell</th>
                     </tr>
                     </thead>
                     <tbody>
-                    {portfolio.currencies.map((crypto) => (
+                    {tableData && Object.values(tableData).map((crypto) => (
                         <tr key={crypto.id}>
                             <td>
                                 {crypto.name} ({crypto.id})
                             </td>
                             <td>{crypto.quantity}</td>
                             <td>${crypto.boughtPrice.toLocaleString()}</td>
-                            <td>${(crypto.quantity * crypto.boughtPrice).toLocaleString()}</td>
-                            <td
-                                /* className={
-                                                    crypto.percentChange > 0
-                                                        ? 'portfolio-modal__positiveChange'
-                                                        : 'portfolio-modal__negativeChange'
-                                                }*/
-                            >
-                                {/** crypto.percentChange > 0 ? '+' : '-'*/}
-                                {/** Math.abs(crypto.percentChange).toFixed(2)}%*/}
+                            <td>${crypto.valueNow}</td>
+                            <td className={crypto.percentChange > 0 ?'portfolio-modal__change--positive':'portfolio-modal__change--negative' }>
+                                {`${crypto.absoluteChange?.toFixed(2)}(${crypto.percentChange?.toFixed(2)}%)`}
                             </td>
                             <td>
                                 <button
@@ -150,7 +203,9 @@ const PortfolioModal: React.FC<IPortfolioModalProps> = ({ onClose }) => {
                     </tbody>
                 </table>
             </div>
-        </div>
+        </div> )}
+            {isBackdropVisible && <div className="portfolio-backdrop" onClick={onClose} />}
+            </>
     )
-}
+};
 export default PortfolioModal;
