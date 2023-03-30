@@ -13,3 +13,7 @@ export function formatNumber(num: number) {
 export const correctCryptoParam = (name: string) => {
   return (name.includes(' ') ? name.replace(/ /g, '-') : name).toLowerCase()
 }
+
+export function extractCurrencyName(currency: string): string {
+  return currency.split('(')[0].slice(0, -1);
+}

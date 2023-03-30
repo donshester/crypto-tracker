@@ -1,10 +1,14 @@
 import {useDispatch, useSelector} from 'react-redux'
 import {AppDispatch, AppState} from '../../redux/store'
-import { correctCryptoParam } from '../helpers'
+import {correctCryptoParam, extractCurrencyName} from '../helpers'
 import {fetchCryptoInfo, ICryptoInfoResponse} from '../../redux/thunks/fetchCryptoInfoThunk'
-import React from 'react';
+import React, {useState} from 'react';
 import {sellCurrency} from '../../redux/actions/portfolio';
 import './PortfolioModal.scss'
+import CurrencyInput from 'react-currency-input-field';
+import {
+    CurrencyInputProps
+} from 'react-currency-input-field/dist/components/CurrencyInputProps';
 interface IPortfolioModalProps {
     isOpen: boolean
     onClose: () => void
@@ -13,13 +17,52 @@ interface IPortfolioModalProps {
 const PortfolioModal: React.FC<IPortfolioModalProps> = ({ onClose }) => {
     const portfolio = useSelector((state: AppState) => state.portfolio);
     const dispatch:AppDispatch = useDispatch();
-
+    const [errorMessage, setErrorMessage] = useState<string>('');
+    const [sellFormData, setSellFormData] = useState({
+        id: '',
+        name: '',
+        quantity: '',
+        maxQuantity: 0
+    });
+    const getCurrencyQuantity = (currencyName: string): number => {
+        const currency = portfolio.currencies?.find(crypto => crypto.name === currencyName);
+        return currency ? currency.quantity : 0;
+    };
     const handleSellCurrency = async (id: string, name: string, quantity: number) => {
-      const response:ICryptoInfoResponse = await dispatch(fetchCryptoInfo(correctCryptoParam(name)));
-      const currentPrice = parseFloat(response.priceUsd);
-      dispatch(sellCurrency({ id, currentPrice, quantity}));
+        const response:ICryptoInfoResponse = await dispatch(fetchCryptoInfo(correctCryptoParam(name)));
+        const currentPrice = parseFloat(response.priceUsd);
+        dispatch(sellCurrency({ id, currentPrice, quantity}));
     };
 
+    const handleSellFormChange = (event: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>) => {
+        if (event.target instanceof HTMLSelectElement) {
+            const selectedOption = event.target.options[event.target.selectedIndex];
+            setSellFormData({ ...sellFormData, id: selectedOption.value, name: extractCurrencyName(selectedOption.label), maxQuantity: getCurrencyQuantity(extractCurrencyName(selectedOption.label))});
+        } else {
+            setSellFormData({ ...sellFormData, [event.target.name]: event.target.value });
+        }
+    };
+
+    const handleSellFormSubmit = async (e: React.MouseEvent<HTMLElement>) => {
+        e.preventDefault();
+        const { id,name, quantity } = sellFormData;
+        await handleSellCurrency(id, name, parseFloat(quantity));
+
+        setSellFormData({id: '', name: '', quantity: '', maxQuantity: 0});
+    };
+
+
+    const handleQuantityChange: CurrencyInputProps['onValueChange'] = (value, _, values) => {
+
+        setSellFormData({ ...sellFormData, quantity: value as string });
+        if (parseFloat(sellFormData.quantity) > sellFormData.maxQuantity){
+            setErrorMessage(`Max is ${sellFormData.maxQuantity} ${sellFormData.id}!`);
+        }
+        else{
+            setErrorMessage('');
+        }
+
+    }
     return (
         <div className='portfolio-modal'>
             <div className='portfolio-modal__header'>
@@ -29,14 +72,11 @@ const PortfolioModal: React.FC<IPortfolioModalProps> = ({ onClose }) => {
                 </button>
             </div>
             <div className='portfolio-modal__content'>
-                <form /* onSubmit={handleSellFormSubmit}*/ className='portfolio-modal__form'>
+                <form  className='portfolio-modal__form'>
                     <h3>Sell Crypto</h3>
                     <div className='portfolio-modal__formGroup'>
                         <label htmlFor='sell-crypto-select'>Select Crypto:</label>
-                        <select
-                            id='sell-crypto-select'
-                            name='id' /* value={sellFormData.id} onChange={handleSellFormChange}*/
-                        >
+                        <select id='sell-crypto-select' name='id' value={sellFormData.id} onChange={handleSellFormChange}>
                             <option value=''>Select a cryptocurrency</option>
                             {portfolio.currencies?.map((crypto) => (
                                 <option value={crypto.id} key={crypto.id}>
@@ -47,17 +87,23 @@ const PortfolioModal: React.FC<IPortfolioModalProps> = ({ onClose }) => {
                     </div>
                     <div className='portfolio-modal__formGroup'>
                         <label htmlFor='sell-quantity-input'>Quantity:</label>
-                        <input
+                        <CurrencyInput
+                            className='input'
                             id='sell-quantity-input'
-                            type='number'
                             name='quantity'
-                            // value={sellFormData.quantity}
-                            // onChange={handleSellFormChange}
-                            min='0'
-                            step='0.0001'
+                            value={sellFormData.quantity}
+                            onValueChange={handleQuantityChange}
+                            prefix={sellFormData.id + ' '}
+                            max={sellFormData.maxQuantity}
+                            groupSeparator=','
+                            decimalSeparator='.'
+                            decimalsLimit={15}
+                            step={1}
+                            allowNegativeValue={false}
                         />
                     </div>
-                    <button className='portfolio-modal__sellButton' type='submit'>
+                    <div className='invalid-feedback'>{errorMessage}</div>
+                    <button onClick={handleSellFormSubmit} className='portfolio-modal__sellButton' type='submit'>
                         Sell
                     </button>
                 </form>
@@ -66,7 +112,7 @@ const PortfolioModal: React.FC<IPortfolioModalProps> = ({ onClose }) => {
                     <tr>
                         <th>Coin</th>
                         <th>Quantity</th>
-                        <th>Price</th>
+                        <th>Bought Price</th>
                         <th>Value</th>
                         <th>Change</th>
                         <th>Sell</th>

@@ -108,7 +108,8 @@ const AddToPortfolioModal: React.FC<IAddToPortfolioModalProps> = ({
                 groupSeparator=','
                 decimalSeparator='.'
                 prefix={prefixPrice}
-                step={2}
+                decimalsLimit={2}
+                step={1}
               />
               <div className='invalid-feedback'>{errorMessage}</div>
             </div>

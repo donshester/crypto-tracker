@@ -40,6 +40,7 @@ export const portfolioReducer = createReducer(initialState, (builder) => {
             } else {
                 currency.quantity -= quantity;
             }
+
             state.balance += currentPrice * quantity;
             state.portfolioPrice = state.currencies.reduce((sum, c) => sum + c.quantity * c.boughtPrice, 0);
         });
