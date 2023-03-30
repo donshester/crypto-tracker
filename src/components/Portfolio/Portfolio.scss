@@ -7,10 +7,19 @@
 
   &__balance {
     margin-right: 20px;
-  }
 
-  &__percent-change {
+  }
+  &__portfolio-price{
     margin-right: 20px;
+  }
+  &__percent-change {
+    margin-right: 10px;
+    &--positive{
+      color: green;
+    }
+    &--negative{
+      color: red;
+    }
   }
 
   & button {

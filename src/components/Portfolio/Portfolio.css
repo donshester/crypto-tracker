@@ -1,0 +1,27 @@
+.Portfolio {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 10px;
+  font-size: 16px; }
+  .Portfolio__balance {
+    margin-right: 20px; }
+  .Portfolio__portfolio-price {
+    margin-right: 20px; }
+  .Portfolio__percent-change {
+    margin-right: 10px; }
+    .Portfolio__percent-change--positive {
+      color: green; }
+    .Portfolio__percent-change--negative {
+      color: red; }
+  .Portfolio button {
+    background-color: #293241;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer; }
+    .Portfolio button:hover {
+      background-color: #1e2530; }
+
+/*# sourceMappingURL=Portfolio.css.map */
