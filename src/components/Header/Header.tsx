@@ -3,7 +3,9 @@ import './Header.scss'
 import { Portfolio } from '../Portfolio/Portfolio'
 import { useSelector} from "react-redux";
 import {ICoinDataState} from '../../redux/reducers/cryptosReducer';
-
+import Table from "../Table/Table";
+import {Link} from "react-router-dom";
+const logo = require('../../images/MainIcon.png')
 
 const Header: React.FC = () => {
     const { data, isLoading, error } = useSelector(
@@ -13,7 +15,9 @@ const Header: React.FC = () => {
 
     return (
         <header className='Header'>
-            <div className='Header__logo'></div>
+            <Link to={'/'}>
+                <img className='Header__logo' src={logo} alt="logo"></img>
+            </Link>
             <h1 className='Header__title'>Crypto Tracker</h1>
             <div className='Header__cryptos'>
                 {topCryptos.map((crypto) => (

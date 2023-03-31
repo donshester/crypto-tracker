@@ -1,6 +1,6 @@
 import {useDispatch, useSelector} from 'react-redux'
 import {AppDispatch, AppState} from '../../redux/store'
-import {correctCryptoParam, extractCurrencyName} from '../helpers'
+import {correctCryptoParam, debounce, extractCurrencyName} from '../helpers'
 import {fetchCryptoInfo, ICryptoInfoResponse} from '../../redux/thunks/fetchCryptoInfoThunk'
 import React, {useEffect, useState} from 'react';
 import {sellCurrency} from '../../redux/actions/portfolio';
@@ -44,22 +44,23 @@ const PortfolioModal: React.FC<IPortfolioModalProps> = ({ isOpen, onClose }) => 
         const currency = portfolio.currencies?.find(crypto => crypto.name === currencyName);
         return currency ? currency.quantity : 0;
     };
+    const fetchCurrencyPrices = async () => {
+        const currencyNames = portfolio.currencies?.map((crypto) => crypto.name);
+        if (currencyNames) {
+            const response = await Promise.all(currencyNames.map((name) => dispatch(fetchCryptoInfo(correctCryptoParam(name)))));
+            const prices = response.reduce<{ [key: string]: number }>((acc, curr, index) => {
+                if (curr) {
+                    acc[currencyNames[index] as string] = parseFloat(curr.priceUsd);
+                }
+                return acc;
+            }, {});
+            setCurrencyPrices(prices);
+        }
+    };
     useEffect(() => {
-        const fetchCurrencyPrices = async () => {
-            const currencyNames = portfolio.currencies?.map((crypto) => crypto.name);
-            if (currencyNames) {
-                const response = await Promise.all(currencyNames.map((name) => dispatch(fetchCryptoInfo(correctCryptoParam(name)))));
-                const prices = response.reduce<{ [key: string]: number }>((acc, curr, index) => {
-                    if (curr) {
-                        acc[currencyNames[index] as string] = parseFloat(curr.priceUsd);
-                    }
-                    return acc;
-                }, {});
-                setCurrencyPrices(prices);
-            }
-        };
-        fetchCurrencyPrices();
+        const debouncedFetchCurrencyPrices = debounce(fetchCurrencyPrices, 500);
 
+        debouncedFetchCurrencyPrices();
         const newTableData: ITableData[] = [];
         portfolio.currencies?.forEach((crypto) => {
             const quantity = getCurrencyQuantity(crypto.name);
@@ -77,9 +78,7 @@ const PortfolioModal: React.FC<IPortfolioModalProps> = ({ isOpen, onClose }) => 
         });
         setTableData(newTableData);
 
-
     }, [dispatch, portfolio, currencyPrices]);
-
 
     const getMaxCurrencyQuantity = (currencyName: string): number => {
         const currency = portfolio.currencies?.find(crypto => crypto.name === currencyName);

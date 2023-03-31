@@ -17,3 +17,14 @@ export const correctCryptoParam = (name: string) => {
 export function extractCurrencyName(currency: string): string {
   return currency.split('(')[0].slice(0, -1);
 }
+
+
+export function debounce(func: Function, delay: number) {
+  let timerId: ReturnType<typeof setTimeout>;
+  return (...args: any[]) => {
+    clearTimeout(timerId);
+    timerId = setTimeout(() => {
+      func(...args);
+    }, delay);
+  };
+}
