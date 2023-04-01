@@ -36,7 +36,7 @@ const PortfolioModal: React.FC<IPortfolioModalProps> = ({ isOpen, onClose }) => 
     const [currencyPrices, setCurrencyPrices] = useState<{ [key: string]: number }>({});
     const [tableData, setTableData] = useState<ITableData[]>([]);
     const [isBackdropVisible, setIsBackdropVisible] = useState(false);
-
+    const [loading, setLoading] = useState<boolean>(true)
     useEffect(() => {
         setIsBackdropVisible(isOpen);
     }, [isOpen]);
@@ -59,7 +59,7 @@ const PortfolioModal: React.FC<IPortfolioModalProps> = ({ isOpen, onClose }) => 
     };
     useEffect(() => {
         const debouncedFetchCurrencyPrices = debounce(fetchCurrencyPrices, 500);
-
+        setLoading(true);
         debouncedFetchCurrencyPrices();
         const newTableData: ITableData[] = [];
         portfolio.currencies?.forEach((crypto) => {
@@ -77,7 +77,7 @@ const PortfolioModal: React.FC<IPortfolioModalProps> = ({ isOpen, onClose }) => 
             })
         });
         setTableData(newTableData);
-
+        setLoading(false);
     }, [dispatch, portfolio, currencyPrices]);
 
     const getMaxCurrencyQuantity = (currencyName: string): number => {
@@ -179,27 +179,31 @@ const PortfolioModal: React.FC<IPortfolioModalProps> = ({ isOpen, onClose }) => 
                     </tr>
                     </thead>
                     <tbody>
-                    {tableData && Object.values(tableData).map((crypto) => (
-                        <tr key={crypto.id}>
-                            <td>
-                                {crypto.name} ({crypto.id})
-                            </td>
-                            <td>{crypto.quantity}</td>
-                            <td>${crypto.boughtPrice.toLocaleString()}</td>
-                            <td>${crypto.valueNow}</td>
-                            <td className={crypto.percentChange > 0 ?'portfolio-modal__change--positive':'portfolio-modal__change--negative' }>
-                                {`${crypto.absoluteChange?.toFixed(2)}(${crypto.percentChange?.toFixed(2)}%)`}
-                            </td>
-                            <td>
-                                <button
-                                    className='portfolio-modal__sellButton'
-                                     onClick={() => handleSellCurrency( crypto.id, crypto.name, crypto.quantity)}
-                                >
-                                    Sell
-                                </button>
-                            </td>
-                        </tr>
-                    ))}
+                    {loading ? (
+                        <div>Loading...</div>
+                    ) : (
+                        tableData && Object.values(tableData).map((crypto) => (
+                            <tr key={crypto.id}>
+                                <td>
+                                    {crypto.name} ({crypto.id})
+                                </td>
+                                <td>{crypto.quantity}</td>
+                                <td>${crypto.boughtPrice.toLocaleString()}</td>
+                                <td>${crypto.valueNow}</td>
+                                <td className={crypto.percentChange > 0 ? 'portfolio-modal__change--positive' : 'portfolio-modal__change--negative'}>
+                                    {crypto.absoluteChange && typeof crypto.absoluteChange === 'number' ? `${crypto.absoluteChange.toFixed(2)}(${crypto.percentChange?.toFixed(2)}%)` : '-'}
+                                </td>
+                                <td>
+                                    <button
+                                        className='portfolio-modal__sellButton'
+                                        onClick={() => handleSellCurrency(crypto.id, crypto.name, crypto.quantity)}
+                                    >
+                                        Sell
+                                    </button>
+                                </td>
+                            </tr>
+                        ))
+                    )}
                     </tbody>
                 </table>
             </div>
