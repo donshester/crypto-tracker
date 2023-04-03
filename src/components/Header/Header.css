@@ -1,0 +1,48 @@
+.Header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+  padding: 0 10px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); }
+  .Header__logo {
+    width: 50px;
+    height: 50px;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-image: url("../../images/MainIcon.png");
+    margin-right: 10px; }
+  .Header__title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #222222;
+    margin: 0;
+    padding: 0; }
+  .Header__cryptos {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    margin-right: 5px; }
+    .Header__cryptos::-webkit-scrollbar {
+      display: none; }
+  .Header__crypto {
+    display: flex;
+    align-items: center;
+    margin-right: 10px; }
+    .Header__cryptoSymbol {
+      font-size: 16px;
+      margin-right: 2px; }
+    .Header__cryptoName {
+      font-size: 12px;
+      margin-right: 2px; }
+    .Header__cryptoPrice {
+      font-size: 14px;
+      font-weight: 500; }
+  .Header__portfolio {
+    display: flex;
+    align-items: center; }
+
+/*# sourceMappingURL=Header.css.map */

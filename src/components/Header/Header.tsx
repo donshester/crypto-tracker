@@ -1,10 +1,9 @@
 import React from 'react'
 import './Header.scss'
 import { Portfolio } from '../Portfolio/Portfolio'
-import { useSelector} from "react-redux";
+import { useSelector} from 'react-redux';
 import {ICoinDataState} from '../../redux/reducers/cryptosReducer';
-import Table from "../Table/Table";
-import {Link} from "react-router-dom";
+import {Link} from 'react-router-dom';
 const logo = require('../../images/MainIcon.png')
 
 const Header: React.FC = () => {
@@ -23,7 +22,7 @@ const Header: React.FC = () => {
                 {topCryptos.map((crypto) => (
                     <div className='Header__crypto' key={crypto.id}>
                         <div className='Header__cryptoSymbol'>{crypto.name}</div>
-                        <div className='Header__cryptoName'>{crypto.name}</div>
+                        <div className='Header__cryptoName'>{crypto.abbreviation}</div>
                         <div className='Header__cryptoPrice'>{'$'+ Number(crypto.price).toFixed(2)}</div>
                     </div>
                 ))}
