@@ -1,6 +1,6 @@
 import {useDispatch, useSelector} from 'react-redux'
 import {AppDispatch, AppState} from '../../redux/store'
-import {correctCryptoParam, debounce, extractCurrencyName} from '../helpers'
+import {correctCryptoParam, debounce, extractCurrencyName, isInvalidInput} from '../helpers'
 import {fetchCryptoInfo, ICryptoInfoResponse} from '../../redux/thunks/fetchCryptoInfoThunk'
 import React, {useEffect, useState} from 'react';
 import {sellCurrency} from '../../redux/actions/portfolio';
@@ -102,6 +102,10 @@ const PortfolioModal: React.FC<IPortfolioModalProps> = ({ isOpen, onClose }) => 
     const handleSellFormSubmit = async (e: React.MouseEvent<HTMLElement>) => {
         e.preventDefault();
         const { id,name, quantity } = sellFormData;
+        if (isNaN(Number(quantity.trim()))){
+                return;
+        }
+
         await handleSellCurrency(id, name, parseFloat(quantity));
 
         setSellFormData({id: '', name: '', quantity: '', maxQuantity: 0});
@@ -134,7 +138,7 @@ const PortfolioModal: React.FC<IPortfolioModalProps> = ({ isOpen, onClose }) => 
                 <form  className='portfolio-modal__form'>
                     <h3>Sell Crypto</h3>
                     <div className='portfolio-modal__formGroup'>
-                        <label htmlFor='sell-crypto-select'>Select Crypto:</label>
+                        <label htmlFor='sell-crypto-select-label'>Select Crypto:</label>
                         <select id='sell-crypto-select' name='id' value={sellFormData.id} onChange={handleSellFormChange}>
                             <option value=''>Select a cryptocurrency</option>
                             {portfolio.currencies?.map((crypto) => (
@@ -172,9 +176,9 @@ const PortfolioModal: React.FC<IPortfolioModalProps> = ({ isOpen, onClose }) => 
                     <tr>
                         <th>Coin</th>
                         <th>Quantity</th>
-                        <th>Bought Price</th>
+                        <th className='portfolio-modal__cellBoughtPrice'>Bought Price</th>
                         <th>Value now</th>
-                        <th>Change</th>
+                        <th className='portfolio-modal__cellChange'>Change</th>
                         <th>Sell</th>
                     </tr>
                     </thead>
@@ -187,11 +191,11 @@ const PortfolioModal: React.FC<IPortfolioModalProps> = ({ isOpen, onClose }) => 
                                 <td>
                                     {crypto.name} ({crypto.id})
                                 </td>
-                                <td>{crypto.quantity}</td>
-                                <td>${crypto.boughtPrice.toLocaleString()}</td>
+                                <td>{crypto.quantity.toFixed(10)}</td>
+                                <td className="portfolio-modal__boughtPrice">${crypto.boughtPrice.toLocaleString()}</td>
                                 <td>${crypto.valueNow}</td>
                                 <td className={crypto.percentChange > 0 ? 'portfolio-modal__change--positive' : 'portfolio-modal__change--negative'}>
-                                    {crypto.absoluteChange && typeof crypto.absoluteChange === 'number' ? `${crypto.absoluteChange.toFixed(2)}(${crypto.percentChange?.toFixed(2)}%)` : '-'}
+                                    {crypto.absoluteChange && true ? `${crypto.absoluteChange.toFixed(2)}(${crypto.percentChange?.toFixed(2)}%)` : '-'}
                                 </td>
                                 <td>
                                     <button

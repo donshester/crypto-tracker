@@ -14,6 +14,10 @@
     background-size: contain;
     background-image: url('../../images/MainIcon.png');
     margin-right: 10px;
+    @media screen and (max-width: 768px) {
+        width: 30px;
+        height: 30px;
+    }
   }
 
   &__title {
@@ -22,6 +26,9 @@
     color: #222222;
     margin: 0;
     padding: 0;
+    @media screen and (max-width: 768px){
+      display: none;
+    }
   }
 
   &__cryptos {
@@ -41,6 +48,10 @@
     display: flex;
     align-items: center;
     margin-right: 10px;
+
+    @media screen and (max-width: 768px){
+      display: none;
+    }
 
     &Symbol {
       font-size: 16px;

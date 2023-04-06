@@ -45,23 +45,19 @@ const Table: React.FC = () => {
       {isLoading && <p>Loading...</p>}
       <thead className='Table__head'>
         <tr>
-          <th className='Table__cell'>Rank</th>
-          <th className='Table__cell'>Logo</th>
-          <th className='Table__cell'>Name</th>
-          <th className='Table__cell'>Abbreviation</th>
-          <th className='Table__cell'>Price</th>
-          <th className='Table__cell'>Market Cap</th>
-          <th className='Table__cell'>Change 24h</th>
-          <th className='Table__cell'>Action</th>
+          <th className='Table__cellRank'>Rank</th>
+          <th className='Table__cellName'>Name</th>
+          <th className='Table__cellAbbreviation'>Abbreviation</th>
+          <th className='Table__cellPrice'>Price</th>
+          <th className='Table__cellMarketCap'>Market Cap</th>
+          <th className='Table__cellChange'>Change 24h</th>
+          <th className='Table__cellAction'>Action</th>
         </tr>
       </thead>
       <tbody className='Table__body'>
         {data.map((coin: ICryptoTable) => (
           <tr key={coin.id} className='Table__row'>
             <td className='Table__rank'>{coin.rank}</td>
-            <td className='Table__logo'>
-              <img src={''} alt={coin.name} />
-            </td>
             <td className='Table__name'>
               <Link className='Table__link' to={`/currency/${correctCryptoParam(coin.name)}`}>
                 {coin.name}

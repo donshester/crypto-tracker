@@ -3,13 +3,19 @@
   align-items: center;
   justify-content: flex-end;
   padding-right: 10px;
-  font-size: 16px; }
+  font-size: 14px; }
+  @media screen and (min-width: 768px) {
+    .Portfolio {
+      font-size: 15px; } }
+  @media screen and (min-width: 1024px) {
+    .Portfolio {
+      font-size: 16px; } }
   .Portfolio__balance {
-    margin-right: 20px; }
-  .Portfolio__portfolio-price {
-    margin-right: 20px; }
-  .Portfolio__percent-change {
     margin-right: 10px; }
+  .Portfolio__portfolio-price {
+    margin-right: 10px; }
+  .Portfolio__percent-change {
+    margin-right: 15px; }
     .Portfolio__percent-change--positive {
       color: green; }
     .Portfolio__percent-change--negative {
@@ -23,5 +29,9 @@
     cursor: pointer; }
     .Portfolio button:hover {
       background-color: #1e2530; }
+
+@media screen and (max-width: 768px) {
+  .Portfolio__absolute-change, .Portfolio__percent-change--positive, .Portfolio__percent-change--negative {
+    display: none; } }
 
 /*# sourceMappingURL=Portfolio.css.map */

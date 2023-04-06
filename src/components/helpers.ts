@@ -28,3 +28,6 @@ export function debounce(func: Function, delay: number) {
     }, delay);
   };
 }
+export const isInvalidInput = (str: string): boolean => {
+  return !(/^\d+$/.test(str)) && !(/^\s*$/.test(str));
+}

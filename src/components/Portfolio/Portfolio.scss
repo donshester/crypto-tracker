@@ -3,21 +3,33 @@
   align-items: center;
   justify-content: flex-end;
   padding-right: 10px;
-  font-size: 16px;
+  font-size: 14px;
+
+  @media screen and (min-width: 768px) {
+    font-size: 15px;
+  }
+
+  @media screen and (min-width: 1024px) {
+    font-size: 16px;
+  }
 
   &__balance {
-    margin-right: 20px;
-
-  }
-  &__portfolio-price{
-    margin-right: 20px;
-  }
-  &__percent-change {
     margin-right: 10px;
-    &--positive{
+  }
+
+  &__portfolio-price {
+    margin-right: 10px;
+  }
+
+  &__percent-change {
+    margin-right: 15px;
+
+
+    &--positive {
       color: green;
     }
-    &--negative{
+
+    &--negative {
       color: red;
     }
   }
@@ -32,6 +44,17 @@
 
     &:hover {
       background-color: #1e2530;
+    }
+  }
+}
+
+@media screen and (max-width: 768px){
+  .Portfolio{
+    &__absolute-change,
+    &__percent-change--positive,
+    &__percent-change--negative,
+    {
+      display: none;
     }
   }
 }
